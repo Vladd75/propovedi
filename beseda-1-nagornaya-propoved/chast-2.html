@@ -39,6 +39,11 @@ footer { margin-top: 40px; color: var(--muted); font-size: 14px; text-align: cen
 footer a { color: var(--accent); }
 footer .legal { font-size: 12px; margin-top: 10px; }
 footer .video-link { margin: 4px 0 0; font-weight: 600; }
+.player { margin: 0 0 26px; padding: 14px; border: 1px solid var(--line); border-radius: 12px; }
+.player audio { width: 100%; }
+.speeds { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 10px; font-size: 15px; color: var(--muted); }
+.speeds button { font: inherit; font-size: 15px; padding: 5px 11px; border-radius: 8px; border: 1px solid var(--line); background: transparent; color: var(--fg); cursor: pointer; }
+.speeds button.on { background: var(--accent); color: #fff; border-color: var(--accent); }
 </style>
 </head>
 <body>
@@ -49,6 +54,29 @@ footer .video-link { margin: 4px 0 0; font-weight: 600; }
   <h1>Часть 2</h1>
   <p class="date">6 сентября 2026</p>
 </header>
+<div class="player">
+  <audio id="aud" controls preload="metadata" src="chast-2.mp3"></audio>
+  <div class="speeds" id="speeds"><span>Скорость:</span></div>
+</div>
+<script>
+(function () {
+  var a = document.getElementById('aud'), box = document.getElementById('speeds');
+  var rates = [1, 1.2, 1.3, 1.4, 1.5, 1.6], btns = [], cur = 1;
+  try { var s = parseFloat(localStorage.getItem('sermonRate')); if (rates.indexOf(s) >= 0) cur = s; } catch (e) {}
+  function apply(r) {
+    cur = r; a.defaultPlaybackRate = r; a.playbackRate = r;
+    for (var i = 0; i < btns.length; i++) btns[i].className = (rates[i] === r) ? 'on' : '';
+    try { localStorage.setItem('sermonRate', String(r)); } catch (e) {}
+  }
+  rates.forEach(function (r) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.textContent = r + '\u00d7';
+    b.onclick = function () { apply(r); };
+    box.appendChild(b); btns.push(b);
+  });
+  apply(cur);
+})();
+</script>
   <p>«Увидев народ, Он взошёл на гору, и когда сел, приступили к Нему ученики Его» [Мф. 5:1]. И так Он не только сам восходит на гору, Он возводит на гору своих учеников и народ. И Он сел, воссел. Есть два объяснения, почему Он воссел. Некоторые отцы церкви говорили, когда человек садится, он как бы уменьшается в своем росте. Даже если высокий человек сядет, он уменьшается и становится ближе к тем людям, которые не очень высокие. Поэтому те отцы, которые так говорили, они в этом видят как бы кеносис самоуничижения. Он учит не как на Синае, &quot;гласом с небес&quot;, а уменьшившись в росте - воссел.</p>
   <p>Но есть другое объяснение. В раввинистической традиции. А Христа его ученики называли раввином. Было принято в то время, что раввин сидел, и место, на котором он сидел и вещал, называлось Моисеево седалище. И в Евангелии от Матфея мы находим такой текст, Христос говорит: «На Моисеевом седалище сели книжники и фарисеи. Итак, всё, что велят вам делать, делайте, но по делам их не поступайте, ибо они говорят, но не делают» [Мф. 23:2-3]. Христос, в отличие от книжников и фарисеев, делал ровно то, что он говорил.</p>
   <p>«Увидев народ, он зашёл на гору, и когда сел, приступили к нему ученики его, и Он, отверзши уста свои, учил их, говоря» [Мф. 5:1-2]. Трижды об одном — это называется тавтология. И Он, открыв рот, учил, говоря. Почему так сказано? Отцы церкви обращают внимание на эту сложность. Был такой экзегет Цезарий Арльский (V век), крупнейший западный библеист. И он говорил: если в тексте вы видите какую-то шероховатость, это значит, текст ставит вас перед неким вопросом. Вы должны находить решение.</p>

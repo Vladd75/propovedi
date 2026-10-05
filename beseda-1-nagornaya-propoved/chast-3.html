@@ -39,6 +39,11 @@ footer { margin-top: 40px; color: var(--muted); font-size: 14px; text-align: cen
 footer a { color: var(--accent); }
 footer .legal { font-size: 12px; margin-top: 10px; }
 footer .video-link { margin: 4px 0 0; font-weight: 600; }
+.player { margin: 0 0 26px; padding: 14px; border: 1px solid var(--line); border-radius: 12px; }
+.player audio { width: 100%; }
+.speeds { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 10px; font-size: 15px; color: var(--muted); }
+.speeds button { font: inherit; font-size: 15px; padding: 5px 11px; border-radius: 8px; border: 1px solid var(--line); background: transparent; color: var(--fg); cursor: pointer; }
+.speeds button.on { background: var(--accent); color: #fff; border-color: var(--accent); }
 </style>
 </head>
 <body>
@@ -49,6 +54,29 @@ footer .video-link { margin: 4px 0 0; font-weight: 600; }
   <h1>Часть 3</h1>
   <p class="date">6 сентября 2026</p>
 </header>
+<div class="player">
+  <audio id="aud" controls preload="metadata" src="chast-3.mp3"></audio>
+  <div class="speeds" id="speeds"><span>Скорость:</span></div>
+</div>
+<script>
+(function () {
+  var a = document.getElementById('aud'), box = document.getElementById('speeds');
+  var rates = [1, 1.2, 1.3, 1.4, 1.5, 1.6], btns = [], cur = 1;
+  try { var s = parseFloat(localStorage.getItem('sermonRate')); if (rates.indexOf(s) >= 0) cur = s; } catch (e) {}
+  function apply(r) {
+    cur = r; a.defaultPlaybackRate = r; a.playbackRate = r;
+    for (var i = 0; i < btns.length; i++) btns[i].className = (rates[i] === r) ? 'on' : '';
+    try { localStorage.setItem('sermonRate', String(r)); } catch (e) {}
+  }
+  rates.forEach(function (r) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.textContent = r + '\u00d7';
+    b.onclick = function () { apply(r); };
+    box.appendChild(b); btns.push(b);
+  });
+  apply(cur);
+})();
+</script>
   <p>И мы переходим к первой заповеди блаженств: «Блаженны нищие духом, ибо их есть Царство Небесное» [Мф. 5:3]. Что означает слово «блажен»? И где мы раньше встречали это слово? Мы раньше встречали это слово в псалтири, которая начинается словами: «Блажен муж, который не ходит на совет нечестивых и не стоит на пути грешных и не сидит в собрании развратителей» [Пс. 1:1].</p>
   <p>Считается, что этот стих из псалтири — квинтэссенция содержания всей псалтири. Здесь говорится о человеке, который блажен — ашер хаиш, так по-еврейски начинается этот псалом, — который не ходит, где не надо ходить, не стоит заодно с теми, с кем не надо стоять заодно, и не сидит рядом с теми, в совете которых не стоит находиться. Есть четвёртая позиция человеческого тела — лежит, но, как отцы говорили, спишь — не грешишь. Поэтому молитвенный корпус псалтири объемлет все формы человеческого бытия. И Иисус Христос, когда Он умирает на кресте, Он молится по псалтири: «Боже мой, Боже мой, почему Ты оставил меня?» [Мф. 27:46]. Таким образом Он научает нас в самые тяжёлые моменты жизни обращаться к этому источнику.</p>
   <p>Так вот, слово «ашер», «ашери», «блажен» — оно очень интересное слово. Оно означает «блажен всегда», при определённом условии. Если не ходит, с кем не надо ходить, не стоит заодно, с кем не надо стоять заодно, и не сидит в совете тех, с кем рядом сидеть нельзя. И вот слово «развратители», совет развратителей, по-еврейски мацехек, в контексте Ветхого Завета оно означает идолопоклонство, сексуальную распущенность и смертоубийство. Смертоубийство — это когда евреи воевали друг с другом, и одна часть евреев говорит другой: пусть молодёжь выйдет, поиграют ножичками. Они вышли и привезли друг друга. То есть у этого слова дурная смысловая коннотация. А слово «блажен» — имеется в виду блажен всегда при условии, а при каких условиях — вот дальше говорится. Вот почему эти блаженства называются заповеди блаженства.</p>
