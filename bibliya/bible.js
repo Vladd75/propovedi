@@ -487,6 +487,7 @@ function initPage(app) {
       btnPrev.disabled = ch <= 1;
       btnNext.disabled = ch >= BOOKS[book].chapters;
       app.className = 'ready';
+      if ($('btop')) $('btop').hidden = false;
       if (ranges.length && !first) status.textContent = 'Такого стиха в этой главе нет.';
       var el = first ? $('v' + first) : null;
       if (el) el.scrollIntoView({ block: 'start' }); else window.scrollTo(0, 0);   // отступ сверху — в стилях страницы
@@ -571,13 +572,11 @@ function initPage(app) {
   }
 
   // «↑» — наверх, к строке поиска: по ссылке на стих страница открывается уже прокрученной
+  // Видна всегда, пока открыта глава (её показывает showChapter). Раньше она
+  // появлялась по прокрутке — на телефоне после перехода к стиху её не было,
+  // пока не сдвинешь страницу пальцем.
   var btnTop = $('btop');
-  if (btnTop) {
-    var showTop = function () { btnTop.hidden = window.pageYOffset < 300; };
-    window.addEventListener('scroll', showTop, { passive: true });
-    btnTop.onclick = function () { window.scrollTo(0, 0); };
-    showTop();
-  }
+  if (btnTop) btnTop.onclick = function () { window.scrollTo(0, 0); };
 
   fillChapters(null);
   window.addEventListener('hashchange', route);
