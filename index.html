@@ -62,5 +62,12 @@ footer.legal { margin-top: 30px; color: var(--muted); font-size: 12px; text-alig
 <footer class="legal">Тексты и записи публикуются в ознакомительных целях.
 Права на видеозаписи принадлежат правообладателям.</footer>
 </main>
+<script>
+// Вышли в каталог — беседа закрыта: плашка «Назад к беседе» на странице
+// «Библия» больше не нужна (её данные кладёт bible.js при уходе с беседы).
+window.addEventListener('pageshow', function () {
+  try { sessionStorage.removeItem('sermonBack'); sessionStorage.removeItem('sermonReturn'); } catch (e) {}
+});
+</script>
 </body>
 </html>
