@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Библия — Синодальный перевод</title>
+<style>
+:root { --bg: #faf8f4; --fg: #1f1c17; --muted: #7a7266; --accent: #8a5a2b; --line: #e4ddd0; --hl: rgba(214,163,92,.22); --mark: rgba(214,163,92,.5); }
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #171512; --fg: #ece6da; --muted: #a89d8a; --accent: #d6a35c; --line: #37322a; --hl: rgba(214,163,92,.16); --mark: rgba(214,163,92,.42); }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg);
+  font-family: -apple-system, "Segoe UI", Roboto, system-ui, sans-serif; font-size: 20px; line-height: 1.6; }
+main { max-width: 680px; margin: 0 auto; padding: 28px 20px 60px; }
+nav.crumbs { font-size: 15px; margin-bottom: 18px; }
+nav.crumbs a { color: var(--accent); text-decoration: none; }
+h1 { font-size: 26px; margin: 0 0 2px; }
+.sub { color: var(--muted); font-size: 14px; margin: 0 0 18px; }
+form { display: flex; gap: 8px; }
+input[type=search], select, button { font: inherit; font-size: 17px; border-radius: 10px;
+  border: 1px solid var(--line); background: transparent; color: var(--fg); padding: 10px 12px; }
+input[type=search] { flex: 1; min-width: 0; }
+select { background: var(--bg); min-width: 0; }
+button { cursor: pointer; }
+form button { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+button:disabled { opacity: .4; cursor: default; }
+.wm { display: block; color: var(--muted); font-size: 14px; margin: 10px 0 14px; }
+.wm input { margin-right: 6px; }
+.pick { display: flex; gap: 8px; }
+.pick #bbook { flex: 1; }
+#bstatus { color: var(--muted); font-size: 16px; margin: 14px 0 0; }
+#bstatus:empty { display: none; }
+#balso { font-size: 15px; color: var(--muted); margin: 14px 0 0; line-height: 2.3; }
+#balso:empty { display: none; }
+#balso a { color: var(--accent); text-decoration: none; border: 1px solid var(--line);
+  border-radius: 8px; padding: 4px 9px; white-space: nowrap; }
+#balso a.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+h2 { font-size: 21px; margin: 26px 0 12px; }
+#btext p { margin: 0 0 .55em; padding: 2px 8px; margin-left: -8px; margin-right: -8px; border-radius: 8px; }
+#btext b { color: var(--muted); font-size: .7em; margin-right: .4em; }
+#btext p.hl { background: var(--hl); scroll-margin-top: 30vh; }
+mark { background: var(--mark); color: inherit; border-radius: 3px; }
+.chnav { display: flex; justify-content: space-between; gap: 8px; margin-top: 26px;
+  padding-top: 18px; border-top: 1px solid var(--line); }
+.hint { color: var(--muted); font-size: 16px; margin-top: 22px; }
+.hint a { color: var(--accent); }
+#bible-app:not(.ready) h2, #bible-app:not(.ready) .chnav { display: none; }
+#bible-app.ready .hint { display: none; }
+footer { margin-top: 36px; color: var(--muted); font-size: 12px; text-align: center; }
+</style>
+</head>
+<body>
+<main id="bible-app">
+<nav class="crumbs"><a href="index.html">← Все беседы</a></nav>
+<h1>Библия</h1>
+<p class="sub">Синодальный перевод</p>
+<form id="bf">
+  <input id="bq" type="search" placeholder="Ин 3:16, 1 Кор 13 или слова" autocomplete="off" autocapitalize="off">
+  <button type="submit">Найти</button>
+</form>
+<label class="wm"><input type="checkbox" id="bw">искать по словам (а не по смыслу фразы)</label>
+<div class="pick">
+  <select id="bbook" aria-label="Книга"></select>
+  <select id="bch" aria-label="Глава"></select>
+</div>
+<p id="bstatus"></p>
+<div id="balso"></div>
+<h2 id="btitle"></h2>
+<div id="btext"></div>
+<nav class="chnav">
+  <button type="button" id="bprev">← глава</button>
+  <button type="button" id="bnext">глава →</button>
+</nav>
+<div class="hint">
+  <p>Что можно ввести:</p>
+  <p>стих — <a href="#43.3.16">Ин 3:16</a> или несколько подряд — <a href="#40.5.3-12">Мф 5:3-12</a>;<br>
+  главу — <a href="#46.13">1 Кор 13</a>, <a href="#19.50">Пс 50</a>;<br>
+  слова, как запомнились — <a href="#q=%D0%B1%D0%BB%D0%B0%D0%B6%D0%B5%D0%BD%D0%BD%D1%8B%20%D0%BC%D0%B8%D1%80%D0%BE%D1%82%D0%B2%D0%BE%D1%80%D1%86%D1%8B">блаженны миротворцы</a>.</p>
+  <p>Или выберите книгу и главу из списка выше.</p>
+</div>
+<footer>Текст: Синодальный перевод Библии.</footer>
+</main>
+<script src="bibliya/books.js"></script>
+<script src="bibliya/bible.js"></script>
+</body>
+</html>
