@@ -20,12 +20,12 @@ header.top { display: flex; justify-content: space-between; align-items: center;
 .bible-link small { display: block; font-size: 12px; font-weight: 400; color: var(--muted); margin-top: 2px; }
 .sermon { padding: 16px 0; border-bottom: 1px solid var(--line); }
 .sermon h2 { font-size: 19px; margin: 0 0 4px; font-weight: 600; }
-.sermon .date { color: var(--muted); font-size: 14px; margin: 0 0 10px; }
+.sermon .date { color: var(--muted); font-size: 14px; margin: 0 0 10px;
+  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 2px 16px; }
 .parts { display: flex; flex-wrap: wrap; gap: 8px; }
 .parts a { padding: 6px 12px; border-radius: 8px; font-size: 15px; text-decoration: none;
   border: 1px solid var(--line); color: var(--accent); }
-.video-link { font-size: 14px; margin: 0 0 10px; }
-.video-link a { color: var(--accent); }
+.video-link { font-size: 14px; color: var(--accent); }
 .announce { border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 10px;
   padding: 14px 18px; margin: 0 0 24px; font-size: 16px; }
 .announce h2 { font-size: 17px; margin: 0 0 8px; color: var(--accent); }
@@ -51,14 +51,12 @@ footer.legal { margin-top: 30px; color: var(--muted); font-size: 12px; text-alig
 </div>
 <div class="sermon">
   <h2>НАГОРНАЯ ПРОПОВЕДЬ. Беседа #1 (Святогорье 2026). Протоиерей Олег Стеняев</h2>
-  <p class="date">6 сентября 2026</p>
-  <p class="video-link"><a href="https://rutube.ru/video/94a4922d350c51bff406c986fba60cf3/?r=plwd">Смотреть на Rutube</a></p>
+  <p class="date"><span>6 сентября 2026</span><a class="video-link" href="https://rutube.ru/video/94a4922d350c51bff406c986fba60cf3/?r=plwd">Смотреть на Rutube</a></p>
   <div class="parts"><a href="beseda-1-nagornaya-propoved/chast-1.html">Часть 1</a> <a href="beseda-1-nagornaya-propoved/chast-2.html">Часть 2</a> <a href="beseda-1-nagornaya-propoved/chast-3.html">Часть 3</a> <a href="beseda-1-nagornaya-propoved/chast-4.html">Часть 4</a> <a href="beseda-1-nagornaya-propoved/chast-5.html">Часть 5</a></div>
 </div>
 <div class="sermon">
   <h2>НАГОРНАЯ ПРОПОВЕДЬ. Беседа #2 Прот. Олег Стеняев</h2>
-  <p class="date">8 октября 2026</p>
-  <p class="video-link"><a href="https://rutube.ru/video/4a6685481e9a8b131167c853cc820bfc/">Смотреть на Rutube</a></p>
+  <p class="date"><span>8 октября 2026</span><a class="video-link" href="https://rutube.ru/video/4a6685481e9a8b131167c853cc820bfc/">Смотреть на Rutube</a></p>
   <div class="parts"><a href="beseda-2-nagornaya-propoved-prot-oleg-stenyaev/chast-1.html">Часть 1</a> <a href="beseda-2-nagornaya-propoved-prot-oleg-stenyaev/chast-2.html">Часть 2</a></div>
 </div>
 <footer class="legal">Тексты и записи публикуются в ознакомительных целях.

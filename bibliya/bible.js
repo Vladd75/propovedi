@@ -570,6 +570,15 @@ function initPage(app) {
     showChapter(segs[0].book, segs[0].ch, segs[0].ranges, words);
   }
 
+  // «↑» — наверх, к строке поиска: по ссылке на стих страница открывается уже прокрученной
+  var btnTop = $('btop');
+  if (btnTop) {
+    var showTop = function () { btnTop.hidden = window.pageYOffset < 300; };
+    window.addEventListener('scroll', showTop, { passive: true });
+    btnTop.onclick = function () { window.scrollTo(0, 0); };
+    showTop();
+  }
+
   fillChapters(null);
   window.addEventListener('hashchange', route);
   route();

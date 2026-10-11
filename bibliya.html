@@ -31,6 +31,11 @@ select { background: var(--bg); min-width: 0; }
 button { cursor: pointer; }
 form button { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
 button:disabled { opacity: .4; cursor: default; }
+.how { color: var(--muted); font-size: 14px; line-height: 1.45; margin: 8px 0 0; }
+#btop { position: fixed; right: 14px; bottom: 76px; z-index: 20; width: 48px; height: 48px; padding: 0;
+  border-radius: 50%; font-size: 22px; line-height: 1; background: var(--bg); color: var(--accent);
+  border: 1px solid var(--accent); box-shadow: 0 4px 16px rgba(0,0,0,.35); }
+#btop[hidden] { display: none; }
 .wm { display: block; color: var(--muted); font-size: 14px; margin: 10px 0 14px; }
 .wm input { margin-right: 6px; }
 .pick { display: flex; gap: 8px; }
@@ -65,6 +70,7 @@ footer { margin-top: 36px; color: var(--muted); font-size: 12px; text-align: cen
   <input id="bq" type="search" placeholder="Ин 3:16, 1 Кор 13 или слова" autocomplete="off" autocapitalize="off">
   <button type="submit">Найти</button>
 </form>
+<p class="how">Искать можно по ссылке (Ин 3:16), по главе (1 Кор 13) или просто по словам, как запомнились: «вы соль земли».</p>
 <label class="wm"><input type="checkbox" id="bw">искать по словам (а не по смыслу фразы)</label>
 <div class="pick">
   <select id="bbook" aria-label="Книга"></select>
@@ -79,12 +85,13 @@ footer { margin-top: 36px; color: var(--muted); font-size: 12px; text-align: cen
   <button type="button" id="bnext">глава →</button>
 </nav>
 <div class="hint">
-  <p>Что можно ввести:</p>
+  <p>Примеры — можно нажать:</p>
   <p>стих — <a href="#43.3.16">Ин 3:16</a> или несколько подряд — <a href="#40.5.3-12">Мф 5:3-12</a>;<br>
   главу — <a href="#46.13">1 Кор 13</a>, <a href="#19.50">Пс 50</a>;<br>
   слова, как запомнились — <a href="#q=%D0%B1%D0%BB%D0%B0%D0%B6%D0%B5%D0%BD%D0%BD%D1%8B%20%D0%BC%D0%B8%D1%80%D0%BE%D1%82%D0%B2%D0%BE%D1%80%D1%86%D1%8B">блаженны миротворцы</a>.</p>
   <p>Или выберите книгу и главу из списка выше.</p>
 </div>
+<button type="button" id="btop" aria-label="Наверх, к поиску" title="Наверх, к поиску" hidden>↑</button>
 <footer>Текст: Синодальный перевод Библии.</footer>
 </main>
 <script src="bibliya/books.js"></script>
