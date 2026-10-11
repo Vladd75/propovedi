@@ -275,6 +275,51 @@ function addStyle(css) {
   document.head.appendChild(st);
 }
 
+// ------------------------------------------------------------------ «Назад к беседе»
+/* Со страницы беседы на «Библию» уходят посреди чтения. Чтобы было куда
+   вернуться, беседа при уходе запоминает себя: адрес, место в тексте и
+   минуту записи. «Библия» показывает кнопку «← Назад к беседе», а беседа,
+   открывшись по ней, встаёт на то же место (запись — на паузе, с той же минуты).
+   Память — на вкладку (sessionStorage): закрыли страницу — забылось. */
+var BACK_KEY = 'sermonBack', RETURN_KEY = 'sermonReturn';
+
+function store(key, value) {
+  try {
+    if (value === null) sessionStorage.removeItem(key); else sessionStorage.setItem(key, JSON.stringify(value));
+  } catch (e) {}
+}
+function recall(key) {
+  try { return JSON.parse(sessionStorage.getItem(key)); } catch (e) { return null; }
+}
+
+function initSermonMemory() {
+  var aud = document.getElementById('aud');
+  var back = recall(BACK_KEY);
+  if (recall(RETURN_KEY) && back && back.url === location.pathname) {
+    var restore = function () { window.scrollTo(0, back.y || 0); };
+    restore(); window.addEventListener('load', restore);
+    if (aud && back.t > 0) {
+      var seek = function () { try { aud.currentTime = back.t; } catch (e) {} };
+      if (aud.readyState >= 1) seek(); else aud.addEventListener('loadedmetadata', seek);
+    }
+  }
+  store(RETURN_KEY, null);
+  window.addEventListener('pagehide', function () {
+    var h = document.querySelector('h1');
+    store(BACK_KEY, { url: location.pathname, y: window.pageYOffset,
+                      t: aud ? aud.currentTime : 0, title: h ? h.textContent : '' });
+  });
+}
+
+function initBackLink() {
+  var link = document.getElementById('bback'), back = recall(BACK_KEY);
+  if (!link || !back || !back.url) return;
+  link.href = back.url;
+  link.textContent = '← Назад к беседе' + (back.title ? ' (' + back.title.toLowerCase() + ')' : '');
+  link.hidden = false;
+  link.addEventListener('click', function () { store(RETURN_KEY, 1); });
+}
+
 // ------------------------------------------------------------------ окошко на странице беседы
 function initSheet() {
   var sheet = null, seq = 0;
@@ -532,7 +577,7 @@ function initPage(app) {
 
 function start() {
   var app = document.getElementById('bible-app');
-  if (app) initPage(app); else initSheet();
+  if (app) { initBackLink(); initPage(app); } else { initSermonMemory(); initSheet(); }
 }
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
 

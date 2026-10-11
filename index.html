@@ -15,8 +15,9 @@ body { margin: 0; background: var(--bg); color: var(--fg);
 main { max-width: 680px; margin: 0 auto; padding: 32px 20px 60px; }
 h1 { font-size: 26px; margin: 0; }
 header.top { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: 0 0 24px; }
-.bible-link { padding: 6px 12px; border-radius: 8px; font-size: 15px; text-decoration: none;
-  border: 1px solid var(--line); color: var(--accent); white-space: nowrap; }
+.bible-link { padding: 8px 14px; border-radius: 10px; font-size: 20px; font-weight: 600; line-height: 1.2;
+  text-decoration: none; border: 1px solid var(--line); color: var(--accent); white-space: nowrap; text-align: center; }
+.bible-link small { display: block; font-size: 12px; font-weight: 400; color: var(--muted); margin-top: 2px; }
 .sermon { padding: 16px 0; border-bottom: 1px solid var(--line); }
 .sermon h2 { font-size: 19px; margin: 0 0 4px; font-weight: 600; }
 .sermon .date { color: var(--muted); font-size: 14px; margin: 0 0 10px; }
@@ -31,17 +32,22 @@ header.top { display: flex; justify-content: space-between; align-items: center;
 .announce p { margin: 0 0 8px; }
 .announce ul { margin: 0 0 8px; padding-left: 20px; }
 .announce :last-child { margin-bottom: 0; }
+.announce summary { color: var(--accent); cursor: pointer; font-size: 15px; padding: 4px 0; }
+.announce details[open] summary { margin-bottom: 8px; }
+.announce details[open] .more, .announce details:not([open]) .less { display: none; }
 footer.legal { margin-top: 30px; color: var(--muted); font-size: 12px; text-align: center; }
 </style>
 </head>
 <body>
 <main>
-<header class="top"><h1>Проповеди</h1><a class="bible-link" href="bibliya.html">📖 Библия</a></header>
+<header class="top"><h1>Проповеди</h1><a class="bible-link" href="bibliya.html">📖 Библия<small>Синодальный перевод</small></a></header>
 <div class="announce">
   <h2>Что дальше</h2>
   <p>Сейчас выходит вторая беседа о Нагорной проповеди. Впереди:</p>
+  <details><summary><span class="more">Развернуть</span><span class="less">Свернуть</span></summary>
   <ul><li>Часть 3: о гневе, о примирении с братом, о взгляде с вожделением, о разводе</li><li>Часть 4: о клятве, «не противься злому», о любви к врагам</li><li>Части 5 и 6: ответы на вопросы слушателей</li></ul>
   <p>Следом готовится третья беседа: о милостыне, о молитве и о молитве «Отче наш».</p>
+  </details>
 </div>
 <div class="sermon">
   <h2>НАГОРНАЯ ПРОПОВЕДЬ. Беседа #1 (Святогорье 2026). Протоиерей Олег Стеняев</h2>
