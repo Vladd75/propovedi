@@ -282,6 +282,12 @@ function addStyle(css) {
    открывшись по ней, встаёт на то же место (запись — на паузе, с той же минуты).
    Память — на вкладку (sessionStorage): закрыли страницу — забылось. */
 var BACK_KEY = 'sermonBack', RETURN_KEY = 'sermonReturn';
+/* Плашку показываем, только если на «Библию» перешли прямо со страницы беседы
+   (нажали «📖 Библия», «Открыть главу целиком» или ссылку на главу). Раньше хватало
+   памяти о беседе — и плашка висела, даже когда беседу давно закрыли, а «Библию»
+   открыли с главной или из чата (Влад, 16.10.2026). Отметка одноразовая; чтобы
+   плашка пережила перезагрузку, она переносится в запись истории (history.state). */
+var FROM_KEY = 'sermonToBible';
 
 function store(key, value) {
   try {
@@ -336,6 +342,10 @@ function initSermonMemory() {
     }
   }
   store(RETURN_KEY, null);
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest ? e.target.closest('a[href*="bibliya.html"]') : null;
+    if (a) store(FROM_KEY, 1);
+  }, true);
   window.addEventListener('pagehide', function () {
     var h = document.querySelector('h1');
     store(BACK_KEY, { url: location.pathname, y: window.pageYOffset,
@@ -345,7 +355,13 @@ function initSermonMemory() {
 
 function initBackLink() {
   var link = document.getElementById('bback'), back = recall(BACK_KEY);
-  if (!link || !back || !back.url) return;
+  var fromSermon = recall(FROM_KEY);
+  store(FROM_KEY, null);
+  if (fromSermon) {
+    try { history.replaceState(Object.assign({}, history.state, { fromSermon: 1 }), ''); } catch (e) {}
+  }
+  var marked = fromSermon || (history.state && history.state.fromSermon);
+  if (!link || !back || !back.url || !marked) return;
   link.href = back.url;
   link.textContent = '← Назад к беседе' + (back.title ? ' (' + back.title.toLowerCase() + ')' : '');
   link.hidden = false;
