@@ -48,6 +48,17 @@ button:disabled { opacity: .4; cursor: default; }
   border-radius: 8px; padding: 4px 9px; white-space: nowrap; }
 #balso a.on { background: var(--accent); border-color: var(--accent); color: #fff; }
 h2 { font-size: 21px; margin: 26px 0 12px; }
+/* звёздочка-закладка — прямо в выделенном стихе, чтобы не листать наверх */
+.vmark { font-size: 15px; padding: 3px 10px; margin-left: 8px; border-radius: 14px; vertical-align: 2px;
+  color: var(--accent); background: var(--bg); white-space: nowrap; }
+.vmark.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+.lrow { font-size: 15px; color: var(--muted); margin: 14px 0 0; line-height: 2.3; }
+.lrow:empty { display: none; }
+#bcont a { font-weight: 600; font-size: 16px; }
+.lrow .forget { font-size: 13px; padding: 2px 8px; border-radius: 8px; color: var(--muted); }
+.lrow a { color: var(--accent); text-decoration: none; border: 1px solid var(--line);
+  border-radius: 8px; padding: 4px 9px; white-space: nowrap; }
+#btext p { cursor: pointer; }
 #btext p { margin: 0 0 .55em; padding: 2px 8px; margin-left: -8px; margin-right: -8px; border-radius: 8px; }
 #btext b { color: var(--muted); font-size: .7em; margin-right: .4em; }
 #btext p.hl { background: var(--hl); scroll-margin-top: 30vh; }
@@ -70,12 +81,15 @@ footer { margin-top: 36px; color: var(--muted); font-size: 12px; text-align: cen
   <input id="bq" type="search" placeholder="Ин 3:16, 1 Кор 13 или слова" autocomplete="off" autocapitalize="off">
   <button type="submit">Найти</button>
 </form>
-<p class="how">Искать можно по ссылке (Ин 3:16), по главе (1 Кор 13) или просто по словам, как запомнились: «вы соль земли».</p>
+<p class="how">Искать можно по ссылке (Ин 3:16), по главе (1 Кор 13) или просто по словам, как запомнились: «вы соль земли». Нажмите на стих — его можно отметить закладкой ☆.</p>
 <label class="wm"><input type="checkbox" id="bw">искать по словам (а не по смыслу фразы)</label>
 <div class="pick">
   <select id="bbook" aria-label="Книга"></select>
   <select id="bch" aria-label="Глава"></select>
 </div>
+<div id="bcont" class="lrow"></div>
+<div id="brecent" class="lrow"></div>
+<div id="bmarks" class="lrow"></div>
 <p id="bstatus"></p>
 <div id="balso"></div>
 <h2 id="btitle"></h2>

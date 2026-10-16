@@ -292,10 +292,42 @@ function recall(key) {
   try { return JSON.parse(sessionStorage.getItem(key)); } catch (e) { return null; }
 }
 
+/* «▶ Продолжить с 12:34» у плеера части: место в записи запоминается само (раз в
+   5 секунд, на паузе), у каждого читателя в его браузере. Дослушал до конца — забылось.
+   Кнопка появляется, если остановились дальше первых 30 секунд. Сама запись не
+   перематывается, пока человек не нажмёт — вдруг он хочет начать сначала. */
+function initListenResume(aud, returning) {
+  if (!aud) return;
+  var key = 'listen:' + location.pathname, last = 0, saved = 0;
+  try { saved = +localStorage.getItem(key) || 0; } catch (e) {}
+  function put(t) {
+    try { if (t > 0) localStorage.setItem(key, String(Math.floor(t))); else localStorage.removeItem(key); } catch (e) {}
+  }
+  aud.addEventListener('timeupdate', function () {
+    var now = Date.now();
+    if (now - last > 5000 && aud.currentTime > 0) { last = now; put(aud.currentTime); }
+  });
+  aud.addEventListener('pause', function () { if (aud.currentTime > 0) put(aud.currentTime); });
+  aud.addEventListener('ended', function () { put(0); });
+  if (returning || saved <= 30) return;      // возврат из «Библии» ставит место сам
+  var btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'resume';
+  btn.textContent = '▶ Продолжить с ' + Math.floor(saved / 60) + ':' + ('0' + saved % 60).slice(-2);
+  btn.onclick = function () {
+    var seek = function () { try { aud.currentTime = saved; } catch (e) {} aud.play(); };
+    if (aud.readyState >= 1) seek(); else aud.addEventListener('loadedmetadata', seek, { once: true });
+  };
+  aud.addEventListener('play', function () { if (btn.parentNode) btn.parentNode.removeChild(btn); });
+  aud.parentNode.insertBefore(btn, aud.nextSibling);
+}
+
 function initSermonMemory() {
   var aud = document.getElementById('aud');
   var back = recall(BACK_KEY);
-  if (recall(RETURN_KEY) && back && back.url === location.pathname) {
+  var returning = !!(recall(RETURN_KEY) && back && back.url === location.pathname);
+  initListenResume(aud, returning);
+  if (returning) {
     var restore = function () { window.scrollTo(0, back.y || 0); };
     restore(); window.addEventListener('load', restore);
     if (aud && back.t > 0) {
@@ -335,7 +367,9 @@ function initSheet() {
     '.bsheet-body{overflow-y:auto;padding:2px 20px 4px;font-size:19px;line-height:1.55}' +
     '.bsheet-body p{margin:0 0 .6em}.bsheet-body b{color:var(--muted);font-size:.72em;margin-right:.35em}' +
     '.bsheet-body .where{color:var(--muted);font-size:14px;margin:.4em 0 .3em}' +
-    '.bsheet-more{display:block;padding:8px 20px 16px;font-size:15px;color:var(--accent);text-decoration:none}'
+    '.bsheet-more{display:block;padding:8px 20px 16px;font-size:15px;color:var(--accent);text-decoration:none}' +
+    '.player .resume{font:inherit;font-size:15px;margin-top:10px;padding:7px 14px;border-radius:10px;' +
+    'border:1px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer}'
   );
 
   function close() {
@@ -397,6 +431,9 @@ function initPage(app) {
   var input = $('bq'), wordBox = $('bw'), selBook = $('bbook'), selCh = $('bch');
   var status = $('bstatus'), also = $('balso'), title = $('btitle'), textBox = $('btext');
   var btnPrev = $('bprev'), btnNext = $('bnext');
+  var marksBox = $('bmarks'), contBox = $('bcont'), recentBox = $('brecent');
+  var curHash = null;                // выделенный стих («40.5.9») — его и кладём в закладки
+  var tapSelect = false;             // стих выделили касанием — страницу не прокручивать
   var cur = null;                    // {book, ch} — что сейчас на экране
   var seq = 0, keepAlso = false, lastSearch = null;
 
@@ -477,7 +514,8 @@ function initPage(app) {
         for (var i = 0; i < ranges.length; i++) if (v >= ranges[i][0] && v <= ranges[i][1]) hl = true;
         if (hl && !first) first = v;
         html.push('<p id="v' + v + '"' + (hl ? ' class="hl"' : '') + '><b>' + v + '</b>' +
-                  (hl ? markWords(chapter[v - 1], words) : esc(chapter[v - 1])) + '</p>');
+                  (hl ? markWords(chapter[v - 1], words) : esc(chapter[v - 1])) +
+                  (hl && v === first ? '<button type="button" class="vmark"></button>' : '') + '</p>');
       }
       cur = { book: book, ch: ch };
       title.textContent = BOOKS[book].name + ', ' + (book === 19 ? 'псалом ' : 'глава ') + ch;
@@ -489,13 +527,112 @@ function initPage(app) {
       app.className = 'ready';
       if ($('btop')) $('btop').hidden = false;
       if (ranges.length && !first) status.textContent = 'Такого стиха в этой главе нет.';
-      var el = first ? $('v' + first) : null;
-      if (el) el.scrollIntoView({ block: 'start' }); else window.scrollTo(0, 0);   // отступ сверху — в стилях страницы
+      curHash = ranges.length ? hashOf(book, ch, ranges[0][0], ranges[0][1]) : null;
+      updateMarkBtn();
+      var el = first ? $('v' + first) : null, pv = pendingVerse;
+      pendingVerse = 0;
+      if (tapSelect) tapSelect = false;
+      else if (pv && $('v' + pv)) { $('v' + pv).scrollIntoView({ block: 'start' }); window.scrollBy(0, -70); }  // «Продолжить»
+      else if (el) el.scrollIntoView({ block: 'start' }); else window.scrollTo(0, 0);   // отступ сверху — в стилях страницы
+      rememberChapter(book, ch, pv || first || 1);
     }).catch(function () {
       if (my !== seq) return;
       status.textContent = 'Не удалось загрузить текст — проверьте интернет и попробуйте ещё раз.';
     });
   }
+
+  // --- закладки: у каждого читателя свои, хранятся только в его браузере (localStorage),
+  // на сайт ничего не уходит. Почистил браузер или сменил телефон — закладки пропали.
+  var MARKS_KEY = 'bibleBookmarks';
+  function loadMarks() {
+    try { var m = JSON.parse(localStorage.getItem(MARKS_KEY)); return Array.isArray(m) ? m : []; }
+    catch (e) { return []; }
+  }
+  function saveMarks(m) { try { localStorage.setItem(MARKS_KEY, JSON.stringify(m)); } catch (e) {} }
+  function markLabel(h) {
+    var s = parseHash(h);
+    if (!s || !s[0].ranges.length) return null;
+    return refLabel(s[0].book, s[0].ch, s[0].ranges[0][0], s[0].ranges[0][1]);
+  }
+  function renderMarks() {
+    var m = loadMarks().filter(markLabel);
+    marksBox.innerHTML = m.length ? '⭐ Мои закладки: ' + m.map(function (h) {
+      return '<a href="#' + h + '">' + esc(markLabel(h)) + '</a>';
+    }).join(' ') : '';
+  }
+  function updateMarkBtn() {
+    var btn = textBox.querySelector('.vmark');
+    if (!btn || !curHash) return;
+    var on = loadMarks().indexOf(curHash) >= 0;
+    btn.className = on ? 'vmark on' : 'vmark';
+    btn.textContent = on ? '★ в закладках' : '☆ в закладки';
+  }
+  function toggleMark() {
+    if (!curHash) return;
+    var m = loadMarks(), i = m.indexOf(curHash);
+    if (i >= 0) m.splice(i, 1); else m.unshift(curHash);
+    saveMarks(m.slice(0, 50));
+    updateMarkBtn(); renderMarks();
+  }
+  textBox.addEventListener('click', function (e) {   // касание стиха — выделить его
+    if (e.target.closest && e.target.closest('.vmark')) { toggleMark(); return; }
+    var p = e.target.closest ? e.target.closest('p[id^="v"]') : null;
+    if (!p || !cur) return;
+    tapSelect = true;
+    go(cur.book + '.' + cur.ch + '.' + p.id.slice(1));
+  });
+  renderMarks();
+
+  // --- история чтения: «Продолжить» (последняя глава и стих, до которого долистали)
+  // и «Недавно» (последние 8 глав). Пишется сама, без кнопок; хранится, как и закладки,
+  // только в браузере читателя. «✕ забыть» стирает историю (закладки не трогает).
+  var HIST_KEY = 'bibleHistory', pendingVerse = 0, resume = null, posTimer = null;
+  function loadHist() {
+    try {
+      var h = JSON.parse(localStorage.getItem(HIST_KEY));
+      return Array.isArray(h) ? h.filter(function (x) { return x && BOOKS[x.b]; }) : [];
+    } catch (e) { return []; }
+  }
+  function saveHist(h) { try { localStorage.setItem(HIST_KEY, JSON.stringify(h.slice(0, 8))); } catch (e) {} }
+  function isCur(x) { return cur && cur.book === x.b && cur.ch === x.c; }
+  function rememberChapter(b, c, v) {
+    var h = loadHist().filter(function (x) { return !(x.b === b && x.c === c); });
+    h.unshift({ b: b, c: c, v: v });
+    saveHist(h);
+    renderHistory();
+  }
+  function renderHistory() {
+    var r = resume && !isCur(resume) ? resume : null;
+    contBox.innerHTML = r ? '<a href="#' + r.b + '.' + r.c + '" data-v="' + r.v + '">📖 Продолжить: ' +
+      esc(BOOKS[r.b].name) + ', ' + (r.b === 19 ? 'псалом ' : 'глава ') + r.c + (r.v > 1 ? ', стих ' + r.v : '') + '</a>' : '';
+    var rest = loadHist().filter(function (x) { return !isCur(x) && !(r && x.b === r.b && x.c === r.c); });
+    recentBox.innerHTML = rest.length || r ? (rest.length ? '🕘 Недавно: ' + rest.map(function (x) {
+      return '<a href="#' + x.b + '.' + x.c + '" data-v="' + x.v + '">' + esc(BOOKS[x.b].short + ' ' + x.c) + '</a>';
+    }).join(' ') + ' ' : '') + '<button type="button" class="forget">✕ забыть историю</button>' : '';
+  }
+  function onHistClick(e) {
+    if (e.target.closest && e.target.closest('.forget')) { saveHist([]); resume = null; renderHistory(); return; }
+    var a = e.target.closest ? e.target.closest('a[data-v]') : null;
+    if (!a) return;
+    e.preventDefault();
+    pendingVerse = +a.getAttribute('data-v') || 0;
+    go(a.getAttribute('href').slice(1));
+  }
+  contBox.addEventListener('click', onHistClick);
+  recentBox.addEventListener('click', onHistClick);
+  window.addEventListener('scroll', function () {    // до какого стиха дочитали — первый вверху экрана
+    if (posTimer || !cur) return;
+    posTimer = setTimeout(function () {
+      posTimer = null;
+      var ps = textBox.children, v = 0, h = loadHist();
+      for (var i = 0; i < ps.length; i++) {
+        if (ps[i].getBoundingClientRect().bottom > 90) { v = +ps[i].id.slice(1); break; }
+      }
+      if (v && h[0] && isCur(h[0]) && h[0].v !== v) { h[0].v = v; saveHist(h); }
+    }, 500);
+  }, { passive: true });
+  resume = loadHist()[0] || null;
+  renderHistory();
 
   function showAlso(found, current) {
     if (found.length < 2) { also.innerHTML = ''; return; }
