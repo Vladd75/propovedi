@@ -18,6 +18,8 @@ header.top { display: flex; justify-content: space-between; align-items: center;
 .bible-link { padding: 8px 14px; border-radius: 10px; font-size: 20px; font-weight: 600; line-height: 1.2;
   text-decoration: none; border: 1px solid var(--line); color: var(--accent); white-space: nowrap; text-align: center; }
 .bible-link small { display: block; font-size: 12px; font-weight: 400; color: var(--muted); margin-top: 2px; }
+.hram { display: inline-block; margin-top: 4px; font-size: 15px; color: #2a8a8a; text-decoration: none; }
+@media (prefers-color-scheme: dark) { .hram { color: #5fc4c4; } }
 .bl { display: flex; flex-direction: column; align-items: center; gap: 5px; }
 .tolk { font-size: 12px; color: var(--muted); text-decoration: none; border-bottom: 1px dotted var(--muted); }
 .sermon { padding: 16px 0; border-bottom: 1px solid var(--line); }
@@ -42,7 +44,7 @@ footer.legal { margin-top: 30px; color: var(--muted); font-size: 12px; text-alig
 </head>
 <body>
 <main>
-<header class="top"><h1>Проповеди</h1><div class="bl"><a class="bible-link" href="bibliya.html">📖 Библия<small>Синодальный перевод</small></a><a class="tolk" href="https://bible.optina.ru/">Толкование Библии</a></div></header>
+<header class="top"><div><h1>Проповеди</h1><a class="hram" href="https://vladd75.github.io/hram/">Сайт нашего храма</a></div><div class="bl"><a class="bible-link" href="bibliya.html">📖 Библия<small>Синодальный перевод</small></a><a class="tolk" href="https://vladd75.github.io/hram/tolkovanie.html">Толкование Библии</a></div></header>
 <div class="announce">
   <h2>Что дальше</h2>
   <p>Вторая беседа о Нагорной проповеди выходит по частям, уже готовы пять. Впереди части 6 и 7 — тоже ответы на вопросы слушателей.</p>
