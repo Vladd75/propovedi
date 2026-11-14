@@ -18,6 +18,8 @@ header.top { display: flex; justify-content: space-between; align-items: center;
 .bible-link { padding: 8px 14px; border-radius: 10px; font-size: 20px; font-weight: 600; line-height: 1.2;
   text-decoration: none; border: 1px solid var(--line); color: var(--accent); white-space: nowrap; text-align: center; }
 .bible-link small { display: block; font-size: 12px; font-weight: 400; color: var(--muted); margin-top: 2px; }
+.bl { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+.tolk { font-size: 12px; color: var(--muted); text-decoration: none; border-bottom: 1px dotted var(--muted); }
 .sermon { padding: 16px 0; border-bottom: 1px solid var(--line); }
 .sermon h2 { font-size: 19px; margin: 0 0 4px; font-weight: 600; }
 .sermon .date { color: var(--muted); font-size: 14px; margin: 0 0 10px;
@@ -40,7 +42,7 @@ footer.legal { margin-top: 30px; color: var(--muted); font-size: 12px; text-alig
 </head>
 <body>
 <main>
-<header class="top"><h1>Проповеди</h1><a class="bible-link" href="bibliya.html">📖 Библия<small>Синодальный перевод</small></a></header>
+<header class="top"><h1>Проповеди</h1><div class="bl"><a class="bible-link" href="bibliya.html">📖 Библия<small>Синодальный перевод</small></a><a class="tolk" href="https://bible.optina.ru/">Толкование Библии</a></div></header>
 <div class="announce">
   <h2>Что дальше</h2>
   <p>Вторая беседа о Нагорной проповеди выходит по частям, уже готовы пять. Впереди части 6 и 7 — тоже ответы на вопросы слушателей.</p>
@@ -60,7 +62,7 @@ footer.legal { margin-top: 30px; color: var(--muted); font-size: 12px; text-alig
   <p class="date"><span>8 октября 2026</span><a class="video-link" href="https://rutube.ru/video/4a6685481e9a8b131167c853cc820bfc/">Смотреть на Rutube</a></p>
   <div class="parts"><a href="beseda-2-nagornaya-propoved-prot-oleg-stenyaev/chast-1.html">Часть 1</a> <a href="beseda-2-nagornaya-propoved-prot-oleg-stenyaev/chast-2.html">Часть 2</a> <a href="beseda-2-nagornaya-propoved-prot-oleg-stenyaev/chast-3.html">Часть 3</a> <a href="beseda-2-nagornaya-propoved-prot-oleg-stenyaev/chast-4.html">Часть 4</a> <a href="beseda-2-nagornaya-propoved-prot-oleg-stenyaev/chast-5.html">Часть 5</a></div>
 </div>
-<footer class="legal">Тексты и записи публикуются в ознакомительных целях.
+<footer class="legal"><a href="https://vladd75.github.io/hram/" style="color:inherit">Сайт нашего храма</a><br>Тексты и записи публикуются в ознакомительных целях.
 Права на видеозаписи принадлежат правообладателям.</footer>
 </main>
 <script>
